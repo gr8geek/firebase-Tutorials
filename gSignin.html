@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <title>Login Page</title>
+    <style></style>
+    <body>
+        <label for ="email">Email</label>
+        <input name="email" id="email" type="email"/></br>
+        <label for ="password">Password</label>
+        <input name="password" id="pass" type="password"/></br>
+        <label for ="check">new to hotel booker</label>
+        <input name="check" id="checkbox" type="checkbox" /></br>
+        <button id="submit">Login/Signup</button>
+        <button id="LogOut">Log Out</button>
+        <pre id="object">
+
+        </pre>
+    </body>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-app.js"></script>
+
+    <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-analytics.js"></script>
+  
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.21.0/firebase-database.js"></script>
+
+  
+<script>
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
+  var firebaseConfig = {
+    apiKey: "AIzaSyDi0zGLdG3dHlATsMYNeajmMifnSmdRyWs",
+    authDomain: "restrauntreservation-bfdf7.firebaseapp.com",
+    databaseURL: "https://restrauntreservation-bfdf7.firebaseio.com",
+    projectId: "restrauntreservation-bfdf7",
+    storageBucket: "restrauntreservation-bfdf7.appspot.com",
+    messagingSenderId: "1062470260748",
+    appId: "1:1062470260748:web:147a320a954ac94e863629",
+    measurementId: "G-NXEGH5N3MS"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
+  //firebase.analytics();
+  const preObject = document.getElementById('object')
+
+const dbRefObject = firebase.database().ref().child('object')
+const dbRefObject2 = firebase.database().ref().child('hobbies')
+
+console.log(dbRefObject)
+dbRefObject.on('value',snap=>{
+    preObject.innerText = JSON.stringify(snap.val(),null,3)
+})
+dbRefObject2.on('value',snap=>{
+    preObject.innerHTML+="<br/>"
+    preObject.innerText += JSON.stringify(snap.val(),null,3)
+})
+
+</script>
+<script>
+    var provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().getRedirectResult().then(function(result) {
+  if (result.credential) {
+    // This gives you a Google Access Token. You can use it to access the Google API.
+    var token = result.credential.accessToken;
+    // ...
+  }
+  // The signed-in user info.
+  var user = result.user;
+}).catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // The email of the user's account used.
+  var email = error.email;
+  // The firebase.auth.AuthCredential type that was used.
+  var credential = error.credential;
+  // ...
+});
+    console.log("Hello world")
+    var checkbox = document.getElementById("checkbox")
+    var isChecked = false;
+    checkbox.addEventListener('click',(event)=>{
+        console.log("Toggle Check")
+        isChecked=!isChecked
+    })
+    var logOut=document.getElementById('LogOut')
+    logOut.addEventListener('click',(event)=>{
+        firebase.auth().signOut().then(function() {
+  // Sign-out successful.
+  console.log("Sign Out Done!!")
+        }).catch(function(error) {
+        // An error happened.
+        console.log(error)
+        });
+
+    })
+    var email = document.getElementById('email')
+    var pass = document.getElementById('pass')
+    submit.addEventListener('click',(event)=>{
+        if(isChecked){
+            //Initaite New user Registration
+            console.log("Sign Up the new user")
+        
+            firebase.auth().createUserWithEmailAndPassword(email.value, pass.value).catch(function(error) {
+  // Handle Errors here.
+             var errorCode = error.code;
+             var errorMessage = error.message;
+             console.log("Error CODE:", errorCode)
+             console.log("Error Message",errorMessage)
+  // ...
+});
+
+        }
+        else{
+            //sign in into the website
+            console.log("Log In the existing user")
+            console.log("")
+            firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                // ...
+                });
+                            
+            }
+    })
+    firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    // User is signed in.
+    console.log("User Signed in Presently")
+    var displayName = user.displayName;
+    var email1 = user.email;
+    var emailVerified = user.emailVerified;
+    var photoURL = user.photoURL;
+    var isAnonymous = user.isAnonymous;
+    var uid = user.uid;
+    var providerData = user.providerData;
+    console.log("UserName",displayName)
+    console.log("Email",email1)
+    // ...
+
+  } else {
+    // User is signed out.
+    // ...
+  }
+});
+
+
+
+</script>
+
+    
+</html>
